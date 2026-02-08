@@ -93,7 +93,7 @@ class SearchTree:
 
     def A_star(self):
         if self.goal_test(self.root.state):
-            return self.solution(node), node.g, True
+            return self.solution(self.root), self.root.g, True
         
         frontier = []
         optimal_cost = {}

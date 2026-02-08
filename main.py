@@ -20,8 +20,8 @@ for line in content:
 goal_state = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9],
               [10, 11, 12, 13, 14], [15, 16, 17, 18, 19], [20, 21, 22, 23, 24]]
 
-root = Node(matrix, 0)
-t = SearchTree(matrix, goal_state)
+root = Node(goal_state, 0)
+t = SearchTree(goal_state, goal_state)
 res = t.A_star()
 print(res)
 
