@@ -20,8 +20,14 @@ for line in content:
 goal_state = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9],
               [10, 11, 12, 13, 14], [15, 16, 17, 18, 19], [20, 21, 22, 23, 24]]
 
+init_state = [[0, 1, 2, 3, 4], [5, 6, 16, 8, 9],
+              [10, 11, 12, 13, 14], [15, 7, 17, 18, 19], [20, 21, 22, 23, 24]]
+
+goal_state_2 = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+
+init_state_2 = [[1, 0, 2], [3, 4, 5], [6, 7, 8]]
 root = Node(goal_state, 0)
-t = SearchTree(goal_state, goal_state)
+t = SearchTree(init_state_2, goal_state_2)
 res = t.A_star()
 print(res)
 

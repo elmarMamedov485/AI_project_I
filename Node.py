@@ -97,6 +97,7 @@ class SearchTree:
         
         frontier = []
         optimal_cost = {}
+        explored = set()
 
         heapq.heappush(frontier, (self.root.g + self.manhattan_dist(self.root.state), self.root))
         root_key = tuple(tuple(row) for row in self.root.state)
@@ -108,6 +109,10 @@ class SearchTree:
             
             current_cost, node = heapq.heappop(frontier)
 
+            if node in explored:
+                continue
+            else: explored.add(node)
+
             if self.goal_test(node.state):
                 return self.solution(node), node.g, True
             
@@ -117,7 +122,6 @@ class SearchTree:
                 key = tuple(tuple(row) for row in i.state)
                 if key not in optimal_cost:
                     heapq.heappush(frontier, (cost, i))
-                    print(i.state, cost)
                 elif key in optimal_cost and cost < optimal_cost[key]:
                     optimal_cost[key] = cost
                     
@@ -127,7 +131,7 @@ class SearchTree:
         sol = []
         current = node
 
-        while current.parent is not None:
+        while current is not None:
             sol.append(current.state)
             current = current.parent
 
