@@ -18,8 +18,24 @@ for line in content:
     values = list(map(int, line.split()))
     matrix.append(values)
 
+def is_solvable(state):
+        tiles = [tile for row in state for tile in row if tile != 0]
+    
+        inversions = 0
+        n = len(tiles)
+        for i in range(n):
+            for j in range(i + 1, n):
+                if tiles[i] > tiles[j]:
+                    inversions += 1
+    
+        return inversions % 2 == 0
 
 def run_test(name, initial_state, goal_state):
+    if not is_solvable(init_state):
+            print(f"{name}: The puzzle is not solvabe")
+            print("-" * 60)
+            return False
+    
     start_time = time()
     result = SearchTree(initial_state, goal_state).A_star()
     elapsed = time() - start_time
@@ -49,7 +65,7 @@ init_state_3 = [[5, 1, 15, 7], [8, 4, 2, 11], [0, 3, 6, 14], [12, 9, 10, 13]]
 
 
 tests = [
-    # ("test_1_hard_5x5", init_state, goal_state),
+    ("test_1_hard_5x5", init_state, goal_state),
     ("test_2_medium_3x3", init_state_2, goal_state_2),
     ("test_3_medium_4x4", init_state_3, goal_state_3)
 ]

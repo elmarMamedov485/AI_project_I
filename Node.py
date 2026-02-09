@@ -24,19 +24,19 @@ class Node:
             if x-1 >= 0: 
                 temp = self.copy_state(self.state)
                 self.swap(temp, x, y, x-1, y)
-                children.append(Node(temp, self.g + 1, self))
+                children.append(Node(temp, self.g + 1, self, ("Up", (x-1, y))))
             if x+1 < len(self.state):
                 temp = self.copy_state(self.state)
                 self.swap(temp, x, y, x+1, y)
-                children.append(Node(temp, self.g + 1, self))
+                children.append(Node(temp, self.g + 1, self, ("Down", (x+1, y))))
             if y-1 >= 0: 
                 temp = self.copy_state(self.state)
                 self.swap(temp, x, y, x, y-1)
-                children.append(Node(temp, self.g + 1, self))
+                children.append(Node(temp, self.g + 1, self, ("Left", (x, y-1))))
             if y+1 < len(self.state):
                 temp = self.copy_state(self.state)
                 self.swap(temp, x, y, x, y+1)
-                children.append(Node(temp, self.g + 1, self))
+                children.append(Node(temp, self.g + 1, self, ("Right", (x, y+1))))
 
             self.children = children
 
@@ -59,7 +59,6 @@ class Node:
                 temp_row.append(element)
             temp.append(temp_row)
         return temp
-    
 
 class SearchTree:
 
@@ -146,11 +145,8 @@ class SearchTree:
         root_key = self.state_key(self.root.state)
         best_g[root_key] = self.root.g
         heapq.heappush(frontier, (self.root.g + self.heuristic(self.root.state), self.root))
-
-        while(True):
-            if not frontier:
-                return False
-            
+  
+        while frontier:
             _, node = heapq.heappop(frontier)
             key = self.state_key(node.state)
 
@@ -176,7 +172,7 @@ class SearchTree:
         current = node
 
         while current is not None:
-            sol.append(current.state)
+            sol.append((current.state, current.action))
             current = current.parent
 
         sol.reverse()
