@@ -1,6 +1,7 @@
 MIN_N = 3
-MAX_N = 8
+MAX_N = 5
 
+import random
 from time import time
 from Node import SearchTree
 
@@ -18,20 +19,28 @@ for line in content:
     values = list(map(int, line.split()))
     matrix.append(values)
 
+def generate_initial_state(n):
+    tiles = list(range(n * n))
+
+    while True:
+        random.shuffle(tiles)
+        state = [tiles[i*n:(i+1)*n] for i in range(n)]
+
+        if is_solvable(state):
+            return state
+
+def generate_goal_state(n):
+    tiles = list(range(n * n))
+    state = [tiles[i*n:(i+1)*n] for i in range(n)]
+
+    return state
+
 def is_solvable(state):
         tiles = [tile for row in state for tile in row if tile != 0]
-    
-        inversions = 0
-        n = len(tiles)
-        for i in range(n):
-            for j in range(i + 1, n):
-                if tiles[i] > tiles[j]:
-                    inversions += 1
-    
-        return inversions % 2 == 0
+        return SearchTree._count_inversions(tiles) % 2 == 0
 
 def run_test(name, initial_state, goal_state):
-    if not is_solvable(init_state):
+    if not is_solvable(initial_state):
             print(f"{name}: The puzzle is not solvabe")
             print("-" * 60)
             return False
@@ -46,8 +55,8 @@ def run_test(name, initial_state, goal_state):
         print("-" * 60)
         return
 
-    path, cost, solved = result
-    print(f"{name}: solved={solved}, moves={cost}, path_len={len(path)}")
+    path, cost, processed_nodes, solved = result
+    print(f"{name}: solved={solved}, moves={cost}, path_len={len(path)}, processed_nodes = {processed_nodes}")
     print(f"Time taken: {elapsed:.6f} seconds")
     print("-" * 60)
 
@@ -55,20 +64,34 @@ def run_test(name, initial_state, goal_state):
 goal_state = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9],
               [10, 11, 12, 13, 14], [15, 16, 17, 18, 19], [20, 21, 22, 23, 24]]
 init_state = [[0, 1, 2, 3, 4], [5, 6, 16, 8, 9],
-              [10, 11, 12, 13, 14], [15, 7, 17, 18, 19], [20, 21, 22, 23, 24]]
+              [10, 11, 12, 13, 14], [15, 7, 17, 19, 18], [20, 21, 22, 23, 24]]
 
 goal_state_2 = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 init_state_2 = [[1, 0, 2], [3, 4, 5], [6, 7, 8]]
 
+goal_state_4 = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+init_state_4 = [[1, 0, 2], [3, 5, 4], [6, 8, 7]]
+
 goal_state_3 = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]
 init_state_3 = [[5, 1, 15, 7], [8, 4, 2, 11], [0, 3, 6, 14], [12, 9, 10, 13]]
 
-
-tests = [
+init_state_5 = generate_initial_state(6)
+goal_state_5 = generate_goal_state(6)
+'''tests = [
     ("test_1_hard_5x5", init_state, goal_state),
     ("test_2_medium_3x3", init_state_2, goal_state_2),
+    ("test_3_medium_3x3", init_state_4, goal_state_4),
     ("test_3_medium_4x4", init_state_3, goal_state_3)
 ]
 
 for test_name, init_state, goal_state in tests:
     run_test(test_name, init_state, goal_state)
+
+for i in range(3, 6):
+     initial_state = generate_initial_state(i)
+     goal_state = generate_goal_state(i)
+     print(init_state, goal_state)
+     run_test(f"Test on {i}x{i} matrix: ", initial_state, goal_state)'''
+
+
+run_test(f"Test on {n}x{n} matrix", matrix, generate_goal_state(n))
