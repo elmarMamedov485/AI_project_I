@@ -64,10 +64,11 @@ class Node:
 
 class SearchTree:
 
-    def __init__(self, initial_state, goal_state):
+    def __init__(self, initial_state, goal_state, heuristic_name="manhattan_linear_conflict"):
         self.root = Node(initial_state, 0)
         self.goal_state = goal_state
         self.n = len(goal_state)
+        self.heuristic_name = heuristic_name
         self.goal_pos = {}
         for i in range(self.n):
             for j in range(self.n):
@@ -173,23 +174,28 @@ class SearchTree:
         return 2 * conflicts
 
     def heuristic(self, state):
-        #return self.Gashing_dist(state)
-        #return self.misplaced_tiles(state)
-        return self.manhattan_dist(state) + self.linear_conflict(state)
-        #return self.manhattan_dist(state)
+        if self.heuristic_name == "manhattan_linear_conflict":
+            return self.manhattan_dist(state) + self.linear_conflict(state)
+        if self.heuristic_name == "manhattan":
+            return self.manhattan_dist(state)
+        if self.heuristic_name == "misplaced_tiles":
+            return self.misplaced_tiles(state)
+        if self.heuristic_name == "gasching":
+            return self.Gashing_dist(state)
+        raise ValueError(f"Unknown heuristic: {self.heuristic_name}")
 
     @staticmethod
     def state_key(state):
         return tuple(tuple(row) for row in state)
 
     def A_star(self):
+        processed_nodes = 1
+
         if self.goal_test(self.root.state):
             return self.solution(self.root), self.root.g, processed_nodes, True
         
         frontier = []
         best_g = {}
-
-        processed_nodes = 1
 
         root_key = self.state_key(self.root.state)
         best_g[root_key] = self.root.g
