@@ -112,7 +112,29 @@ def main():
     if n < MIN_N or n > MAX_N:
         raise ValueError(f"n must be between {MIN_N} and {MAX_N}")
 
-    initial_state = read_matrix(n)
+    print("Choose input method:")
+    print("1. Console input")
+    print("2. Read from file (npuzzle.txt)")
+    input_choice = int(input("Select (1-2): "))
+
+    if input_choice == 1:
+        initial_state = read_matrix(n)
+    elif input_choice == 2:
+        with open("npuzzle.txt", "r") as file:
+            content = file.readlines()
+
+        if len(content) != n:
+            raise ValueError(f"File does not contain {n} rows")
+
+        initial_state = []
+        for line in content:
+            row = list(map(int, line.split()))
+            if len(row) != n:
+                raise ValueError(f"File row does not contain {n} numbers")
+            initial_state.append(row)
+    else:
+        raise ValueError("Input method must be 1 or 2")
+
     validate_matrix(initial_state, n)
     goal_state = generate_goal_state(n)
 
@@ -126,7 +148,6 @@ def main():
 
     heuristic_key, heuristic_label = choose_algorithm()
     run_test(initial_state, goal_state, heuristic_key, heuristic_label)
-
 
 if __name__ == "__main__":
     main()

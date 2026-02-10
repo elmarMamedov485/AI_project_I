@@ -6,7 +6,7 @@ from time import time
 from Node import SearchTree
 
 
-with open("p1_npuzzle5.txt", "r") as file:
+with open("npuzzle.txt", "r") as file:
     content = file.readlines()
 
 n = len(content)

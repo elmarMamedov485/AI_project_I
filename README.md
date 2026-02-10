@@ -22,18 +22,7 @@ Project report: `ai_p1_report.pdf`
 ## Requirements
 
 - Python 3
-
-## Run With File Input (`main.py`)
-
-1. Put your matrix in `p1_npuzzle5.txt` (one row per line, space-separated integers).
-2. Run:
-
-```bash
-python main.py
-```
-
-`main.py` currently uses the default heuristic from `Node.py`:
-`Manhattan + Linear Conflict`.
+- File named `npuzzle.txt` in case of file input
 
 ## Run With Interactive Input (`run_test.py`)
 
@@ -46,14 +35,15 @@ python run_test.py
 Then provide:
 
 1. `n` (between `3` and `5`)
-2. `n` matrix rows (each row has `n` integers)
-3. heuristic option:
+2. provide input method: `1` - console input; `2` - read from file (npuzzle.txt)
+3. if console input is chosen provide `n` matrix rows (each row has `n` integers)
+4. heuristic option:
    - `1` Manhattan + Linear Conflict
    - `2` Manhattan Distance
    - `3` Misplaced Tiles
    - `4` Gasching Distance
 
-Example:
+Examples:
 
 ```text
 Enter n (3-5): 3
@@ -61,6 +51,13 @@ Row 1: 1 0 2
 Row 2: 3 5 4
 Row 3: 6 8 7
 Select (1-4): 1
+```
+```text
+Enter n (3-5): 5
+Choose input method:
+1. Console input
+2. Read from file (npuzzle.txt)
+Select (1-2): 2
 ```
 
 Output includes solved status, move count, path length, processed nodes, and runtime.
