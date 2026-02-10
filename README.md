@@ -47,9 +47,18 @@ Examples:
 
 ```text
 Enter n (3-5): 3
+Choose input method:
+1. Console input
+2. Read from file (npuzzle.txt)
+Select (1-2): 1
 Row 1: 1 0 2
 Row 2: 3 5 4
 Row 3: 6 8 7
+Choose algorithm:
+1. Manhattan + Linear Conflict
+2. Manhattan Distance
+3. Misplaced Tiles
+4. Gasching Distance
 Select (1-4): 1
 ```
 ```text
@@ -58,6 +67,12 @@ Choose input method:
 1. Console input
 2. Read from file (npuzzle.txt)
 Select (1-2): 2
+Choose algorithm:
+1. Manhattan + Linear Conflict
+2. Manhattan Distance
+3. Misplaced Tiles
+4. Gasching Distance
+Select (1-4): 1
 ```
 
 Output includes solved status, move count, path length, processed nodes, and runtime.
