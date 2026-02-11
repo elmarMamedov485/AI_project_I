@@ -4,11 +4,14 @@ class Node:
 
     _counter = 0
 
-    def __init__(self, state, g,  parent = None, action = None, children = None):
+    def __init__(self, state, g,  parent = None, action = None):
+        
+        if isinstance(state, list):
+            state = tuple(tuple(row) for row in state)
+        
         self.state = state
         self.parent = parent
         self.action = action
-        self.children = children
         self.g = g
         self.id = Node._counter
         Node._counter += 1
@@ -17,34 +20,25 @@ class Node:
         return self.id < other.id
 
     def expand(self):
-        if not self.children:
-            x, y = Node.find_zero(self.state)
-            children = []
+        x, y = Node.find_zero(self.state)
+        children = []
 
-            if x-1 >= 0: 
-                temp = Node.copy_state(self.state)
-                Node.swap(temp, x, y, x-1, y)
-                children.append(Node(temp, self.g + 1, self, ("Up", (x-1, y))))
-            if x+1 < len(self.state):
-                temp = Node.copy_state(self.state)
-                Node.swap(temp, x, y, x+1, y)
-                children.append(Node(temp, self.g + 1, self, ("Down", (x+1, y))))
-            if y-1 >= 0: 
-                temp = Node.copy_state(self.state)
-                Node.swap(temp, x, y, x, y-1)
-                children.append(Node(temp, self.g + 1, self, ("Left", (x, y-1))))
-            if y+1 < len(self.state):
-                temp = Node.copy_state(self.state)
-                Node.swap(temp, x, y, x, y+1)
-                children.append(Node(temp, self.g + 1, self, ("Right", (x, y+1))))
+        moves = [("Up", x-1, y),("Down", x+1, y), ("Left", x, y-1),("Right", x, y+1)]
 
-            self.children = children
+        for name, nx, ny in moves:
+            if 0 <= nx < len(self.state) and 0 <= ny < len(self.state):
+                new_state = Node.swap(self.state, x, y, nx, ny)
+                children.append(Node(new_state, self.g + 1, self, (name, (nx, ny))))
+
+        return children
 
     @staticmethod
     def swap(state, x1, y1, x2, y2):
-        temp = state[x1][y1]
-        state[x1][y1] = state[x2][y2]
-        state[x2][y2] = temp 
+        temp_state = list(list(row) for row in state)
+        temp = temp_state[x1][y1]
+        temp_state[x1][y1] = temp_state[x2][y2]
+        temp_state[x2][y2] = temp 
+        return tuple(tuple(row) for row in temp_state)
 
     @staticmethod
     def find_zero(state):
@@ -65,8 +59,11 @@ class Node:
 class SearchTree:
 
     def __init__(self, initial_state, goal_state, heuristic_name="manhattan_linear_conflict"):
-        self.root = Node(initial_state, 0)
+        if isinstance(goal_state, list):
+            goal_state = tuple(tuple(row) for row in goal_state)
+        
         self.goal_state = goal_state
+        self.root = Node(initial_state, 0)
         self.n = len(goal_state)
         self.heuristic_name = heuristic_name
         self.goal_pos = {}
@@ -182,11 +179,7 @@ class SearchTree:
             return self.misplaced_tiles(state)
         if self.heuristic_name == "gasching":
             return self.Gashing_dist(state)
-        raise ValueError(f"Unknown heuristic: {self.heuristic_name}")
-
-    @staticmethod
-    def state_key(state):
-        return tuple(tuple(row) for row in state)
+        raise ValueError(f"Unknown heuristic: {self.heuristic_name}")    
 
     def A_star(self):
         processed_nodes = 1
@@ -197,29 +190,26 @@ class SearchTree:
         frontier = []
         best_g = {}
 
-        root_key = self.state_key(self.root.state)
-        best_g[root_key] = self.root.g
+        best_g[self.root.state] = self.root.g
         heapq.heappush(frontier, (self.root.g + self.heuristic(self.root.state), self.root))
 
         while frontier:
             _, node = heapq.heappop(frontier)
-            key = self.state_key(node.state)
 
-            if node.g > best_g.get(key, float("inf")):
+            if node.g > best_g.get(node.state, float("inf")):
                 continue
 
             if self.goal_test(node.state):
                 return self.solution(node), node.g, processed_nodes, True
             
-            node.expand()
-            for i in node.children:
-                child_key = self.state_key(i.state)
-                child_g = i.g
-                if child_g < best_g.get(child_key, float("inf")):
-                    best_g[child_key] = child_g
-                    cost = child_g + self.heuristic(i.state)
+            
+            for child in node.expand():
+                child_g = child.g
+                if child_g < best_g.get(child.state, float("inf")):
+                    best_g[child.state] = child_g
+                    cost = child_g + self.heuristic(child.state)
                     processed_nodes += 1
-                    heapq.heappush(frontier, (cost, i))
+                    heapq.heappush(frontier, (cost, child))
                     
 
     @staticmethod     
