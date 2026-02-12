@@ -24,6 +24,21 @@ Project report: `ai_p1_report.pdf`
 - Python 3
 - File named `npuzzle.txt` in case of file input
 
+## Tests
+
+Run unit tests:
+
+```bash
+python test.py
+```
+
+Coverage highlights:
+
+- Heuristics correctness for small cases
+- Solvability checks and inversion counting
+- A* search on small and 5x5 cases
+- Input validation: invalid sizes, duplicates, and missing `0`
+
 ## Run With Interactive Input (`run_test.py`)
 
 Run:

@@ -2,6 +2,8 @@ import unittest
 from Node import SearchTree
 from run_test import (
     generate_goal_state,
+    validate_matrix,
+    find_zero,
     is_solvable,
     count_relative_inversions
 )
@@ -83,6 +85,51 @@ class TestNPuzzle(unittest.TestCase):
     # ======================================================
     # SOLVABILITY TESTS
     # ======================================================
+
+    def test_validate_matrix_row_too_short(self):
+        matrix = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8]
+        ]
+        with self.assertRaises(ValueError):
+            validate_matrix(matrix, 3)
+
+    def test_validate_matrix_row_too_long(self):
+        matrix = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 0, 9]
+        ]
+        with self.assertRaises(ValueError):
+            validate_matrix(matrix, 3)
+
+    def test_validate_matrix_duplicate_tiles(self):
+        matrix = [
+            [1, 2, 3],
+            [4, 5, 5],
+            [7, 8, 0]
+        ]
+        with self.assertRaises(ValueError):
+            validate_matrix(matrix, 3)
+
+    def test_validate_matrix_missing_zero(self):
+        matrix = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]
+        with self.assertRaises(ValueError):
+            validate_matrix(matrix, 3)
+
+    def test_find_zero_missing(self):
+        matrix = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]
+        with self.assertRaises(ValueError):
+            find_zero(matrix)
 
     def test_solvable_3x3(self):
         initial = [
