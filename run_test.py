@@ -2,7 +2,7 @@ from time import time
 from Node import SearchTree
 
 MIN_N = 3   # minimum puzzle size
-MAX_N = 5   # maximum puzzle size
+MAX_N = 6   # maximum puzzle size
 
 
 # Generate goal state (1..n²-1, 0 at the end)
